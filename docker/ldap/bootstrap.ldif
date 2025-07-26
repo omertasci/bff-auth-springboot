@@ -1,0 +1,19 @@
+dn: ou=people,dc=mycompany,dc=com
+objectClass: organizationalUnit
+ou: people
+
+dn: uid=jdoe,ou=people,dc=mycompany,dc=com
+objectClass: inetOrgPerson
+cn: John Doe
+sn: Doe
+uid: jdoe
+userPassword: password
+mail: jdoe@mycompany.com
+
+dn: uid=guest,ou=people,dc=mycompany,dc=com
+objectClass: inetOrgPerson
+cn: Guest User
+sn: Guest
+uid: guest
+userPassword: guest123
+mail: guest@mycompany.com

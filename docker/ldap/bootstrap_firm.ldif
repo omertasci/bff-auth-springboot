@@ -1,0 +1,60 @@
+dn: dc=mycompany,dc=com
+objectClass: top
+objectClass: domain
+dc: mycompany
+
+# Organizational Units
+dn: ou=people,dc=mycompany,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=mycompany,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+
+# Groups
+dn: cn=developers,ou=groups,dc=mycompany,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: developers
+member: uid=alice,ou=people,dc=mycompany,dc=com
+member: uid=bob,ou=people,dc=mycompany,dc=com
+
+dn: cn=hr,ou=groups,dc=mycompany,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: hr
+member: uid=eve,ou=people,dc=mycompany,dc=com
+
+# Users
+dn: uid=alice,ou=people,dc=mycompany,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Alice Smith
+sn: Smith
+uid: alice
+userPassword: password123
+
+dn: uid=bob,ou=people,dc=mycompany,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Bob Johnson
+sn: Johnson
+uid: bob
+userPassword: password123
+
+dn: uid=eve,ou=people,dc=mycompany,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Eve Adams
+sn: Adams
+uid: eve
+userPassword: password123
