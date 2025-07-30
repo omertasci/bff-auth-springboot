@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+azure:
+  client-id: your-client-id
+  client-secret: your-client-secret
+  token-uri: https://login.microsoftonline.com/your-tenant-id/oauth2/v2.0/token
+
+spring:
+  ldap:
+    urls: ldap://localhost:389
+    base: dc=mycompany,dc=com
+    username: cn=admin,dc=mycompany,dc=com
+    password: admin
+  security:
+    ldap:
+      user-dn-patterns: uid={0},ou=people
+      group-search-base: ou=groups
+      group-search-filter: (member={0})
+#spring:
+#  ldap:
+#    urls: ldap://your-ad-server.com:389
+#    base: dc=yourdomain,dc=com
+#    username: yourdomain\ldap-reader
+#    password: reader-password

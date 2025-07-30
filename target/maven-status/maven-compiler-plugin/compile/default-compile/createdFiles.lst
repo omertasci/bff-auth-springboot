@@ -1,0 +1,11 @@
+com\example\bffauth\config\SecurityConfig.class
+com\example\bffauth\model\AuthRequest.class
+com\example\bffauth\model\AuthResult.class
+com\example\bffauth\config\LdapSecurityConfig.class
+com\example\bffauth\service\AzureADService.class
+com\example\bffauth\service\SharePointService.class
+com\example\bffauth\controller\AuthController.class
+com\example\bffauth\service\AuthService.class
+com\example\bffauth\model\LdapUser.class
+com\example\bffauth\BffAuthApplication.class
+com\example\bffauth\service\LDAPService.class

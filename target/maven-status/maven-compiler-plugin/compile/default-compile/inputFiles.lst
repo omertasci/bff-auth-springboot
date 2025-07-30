@@ -1,0 +1,11 @@
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\service\AuthService.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\service\AzureADService.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\config\LdapSecurityConfig.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\model\AuthRequest.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\service\SharePointService.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\model\LdapUser.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\config\SecurityConfig.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\model\AuthResult.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\service\LDAPService.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\controller\AuthController.java
+C:\workspace\bff-auth-springboot\src\main\java\com\example\bffauth\BffAuthApplication.java
