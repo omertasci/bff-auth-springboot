@@ -12,13 +12,13 @@ import java.util.Map;
 @Service
 public class AzureADService {
 
-    @Value("${azure.client-id}")
+    @Value("${spring.security.oauth2.client.registration.azure.client-id}")
     private String clientId;
 
-    @Value("${azure.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.azure.client-secret}")
     private String clientSecret;
 
-    @Value("${azure.token-uri}")
+    @Value("${spring.security.oauth2.client.registration.azure.token-uri}")
     private String tokenUri;
 
     public String getAccessToken(String username, String password) {
