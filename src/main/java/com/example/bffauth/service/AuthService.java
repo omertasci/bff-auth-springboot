@@ -1,35 +1,28 @@
 package com.example.bffauth.service;
 
 import com.example.bffauth.model.AuthResult;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    @Autowired
-    public LDAPService ldapService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    public AzureADService azureADService;
-
-    @Autowired
-    public SharePointService sharePointService;
+    public AuthService(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     public AuthResult authenticate(String username, String password) {
-        if (ldapService.authenticate(username, password)) {
-            return AuthResult.success("ldap");
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password)
+        );
 
-        try {
-            String token = azureADService.getAccessToken(username, password);
-            if (sharePointService.hasAccess(token)) {
-                return AuthResult.success("azure");
-            }
-        } catch (Exception e) {
-            // log
-        }
-
-        return AuthResult.failure();
+        return new AuthResult(authentication.getName(), authentication.getAuthorities());
     }
 }

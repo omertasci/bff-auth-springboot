@@ -1,24 +1,15 @@
 package com.example.bffauth.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
+
+@Data
+@AllArgsConstructor
 public class AuthResult {
-    private boolean success;
-    private String source;
+    private String username;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public static AuthResult success(String source) {
-        AuthResult result = new AuthResult();
-        result.success = true;
-        result.source = source;
-        return result;
-    }
-
-    public static AuthResult failure() {
-        AuthResult result = new AuthResult();
-        result.success = false;
-        return result;
-    }
-
-    public boolean isSuccess() { return success; }
-    public void setSuccess(boolean success) { this.success = success; }
-    public String getSource() { return source; }
-    public void setSource(String source) { this.source = source; }
 }
