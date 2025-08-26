@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+sharepoint:
+  ag:
+    host: "host"
+    port: 443
+    base-url: "companybaseurl"
+    file: "fileurl"
+  ak:
+    base-url: ""
+  ms:
+    base-url: ""
+
+logging:
+  level:
+    ROOT: DEBUG
