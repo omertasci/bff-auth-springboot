@@ -15,15 +15,6 @@ public class AgController {
         this.agService = agService;
     }
 
-    /*@GetMapping("/files")
-    public String getFiles() {
-        String response =  agService.getFiles();
-
-        System.out.println(response);
-
-        return response;
-    }*/
-
     @GetMapping("/files")
     public String getFiles() {
         try {

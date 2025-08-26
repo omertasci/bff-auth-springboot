@@ -24,7 +24,7 @@ public class AgService {
     }
 
     public String getFiles() {
-        String url = baseUrl + fileUrl;//
+        String url = baseUrl + fileUrl;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
 
