@@ -1,8 +1,8 @@
 CREATE TABLE refresh_tokens (
     id NVARCHAR(36) PRIMARY KEY,
     created_date DATETIME2 NOT NULL,
-    last_modified_date DATETIME2 NULL,
     created_by NVARCHAR(255) NULL,
+    last_modified_date DATETIME2 NULL,
     last_modified_by NVARCHAR(255) NULL,
     username NVARCHAR(255) NOT NULL,
     domain NVARCHAR(255) NULL,

@@ -1,68 +1,70 @@
 package com.example.bffauth.controller;
 
-import com.example.bffauth.model.RefreshToken;
+import com.example.bffauth.entity.RefreshToken;
 import com.example.bffauth.service.RefreshTokenService;
 import com.example.bffauth.util.JwtUtil;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final JwtUtil jwtUtil;
-    private final RefreshTokenService refreshTokenService;
+  private final JwtUtil jwtUtil;
 
-    @Value("${app.jwt.refresh-ms}")
-    private long refreshMs;
+  private final RefreshTokenService refreshTokenService;
 
-    public AuthController(JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
-        this.jwtUtil = jwtUtil;
-        this.refreshTokenService = refreshTokenService;
+  @Value("${app.jwt.refresh-ms}")
+  private long refreshMs;
+
+  public AuthController(JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
+    this.jwtUtil = jwtUtil;
+    this.refreshTokenService = refreshTokenService;
+  }
+
+  // Basit örnek: gerçek projede user doğrulama DB/LDAP/3rd-party yapılmalı
+  @PostMapping("/login")
+  public ResponseEntity<?> login(
+      @RequestParam String username,
+      @RequestParam String password,
+      @RequestParam String domain,
+      @RequestParam(required = false) String deviceId) {
+
+    if (!"user".equals(username) || !"pass".equals(password)) {
+      return ResponseEntity.status(401).body("Invalid credentials");
     }
 
-    // Basit örnek: gerçek projede user doğrulama DB/LDAP/3rd-party yapılmalı
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username,
-                                   @RequestParam String password,
-                                   @RequestParam String domain,
-                                   @RequestParam(required = false) String deviceId) {
+    String access = jwtUtil.generateAccessToken(username, domain);
+    RefreshToken rt =
+        refreshTokenService.create(
+            username, domain, deviceId == null ? "unknown" : deviceId, refreshMs);
+    String refreshPlain = rt.getTokenHash(); // metodumuz plain token'ı buraya koydu
 
-        if (!"user".equals(username) || !"pass".equals(password)) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+    return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refreshPlain));
+  }
 
-        String access = jwtUtil.generateAccessToken(username, domain);
-        RefreshToken rt = refreshTokenService.create(username, domain, deviceId == null ? "unknown" : deviceId, refreshMs);
-        String refreshPlain = rt.getTokenHash(); // metodumuz plain token'ı buraya koydu
+  @PostMapping("/refresh")
+  public ResponseEntity<?> refresh(@RequestParam String refreshToken) {
+    var maybe = refreshTokenService.findByPlain(refreshToken);
+    if (maybe.isEmpty()) {
+      return ResponseEntity.status(401).body("Invalid refresh token");
+    }
+    RefreshToken stored = maybe.get();
 
-        return ResponseEntity.ok(Map.of("accessToken", access, "refreshToken", refreshPlain));
+    if (stored.isRevoked() || stored.getExpiresAt().isBefore(java.time.Instant.now())) {
+      // rotate-while-reuse veya expired => family revoke
+      refreshTokenService.revokeFamily(stored.getFamilyId());
+      return ResponseEntity.status(401).body("Refresh token invalid/expired");
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestParam String refreshToken) {
-        var maybe = refreshTokenService.findByPlain(refreshToken);
-        if (maybe.isEmpty()) {
-            return ResponseEntity.status(401).body("Invalid refresh token");
-        }
-        RefreshToken stored = maybe.get();
+    // rotation
+    RefreshToken newRt = refreshTokenService.rotate(stored, refreshMs);
+    String newRefreshPlain = newRt.getTokenHash();
 
-        if (stored.isRevoked() || stored.getExpiresAt().isBefore(java.time.Instant.now())) {
-            // rotate-while-reuse veya expired => family revoke
-            refreshTokenService.revokeFamily(stored.getFamilyId());
-            return ResponseEntity.status(401).body("Refresh token invalid/expired");
-        }
+    String newAccess = jwtUtil.generateAccessToken(stored.getUsername(), stored.getDomain());
 
-        // rotation
-        RefreshToken newRt = refreshTokenService.rotate(stored, refreshMs);
-        String newRefreshPlain = newRt.getTokenHash();
-
-        String newAccess = jwtUtil.generateAccessToken(stored.getUsername(), stored.getDomain());
-
-        return ResponseEntity.ok(Map.of("accessToken", newAccess, "refreshToken", newRefreshPlain));
-    }
+    return ResponseEntity.ok(Map.of("accessToken", newAccess, "refreshToken", newRefreshPlain));
+  }
 }
-

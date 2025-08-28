@@ -11,35 +11,36 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-    @Configuration
-    public class NtlmRestTemplateConfig {
+@Configuration
+public class NtlmRestTemplateConfig {
 
-        @Value("${sharepoint.ag.host}")
-        String host;
-        @Value("${sharepoint.ag.port}")
-        int port;
-        @Value("${sharepoint.ag.username}")
-        String username;
-        @Value("${sharepoint.ag.password}")
-        String password;
-        @Value("${sharepoint.ag.domain}")
-        String domain;
+  @Value("${sharepoint.ag.host}")
+  String host;
 
-        @Bean
-        public RestTemplate restTemplate() {
-            BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-            credsProvider.setCredentials(
-                    new AuthScope(host, port),
-                    new NTCredentials(username, password.toCharArray(), "", domain)
-            );
+  @Value("${sharepoint.ag.port}")
+  int port;
 
-            CloseableHttpClient httpClient = HttpClients.custom()
-                    .setDefaultCredentialsProvider(credsProvider)
-                    .build();
+  @Value("${sharepoint.ag.username}")
+  String username;
 
-            HttpComponentsClientHttpRequestFactory requestFactory =
-                    new HttpComponentsClientHttpRequestFactory(httpClient);
+  @Value("${sharepoint.ag.password}")
+  String password;
 
-            return new RestTemplate(requestFactory);
-        }
-    }
+  @Value("${sharepoint.ag.domain}")
+  String domain;
+
+  @Bean
+  public RestTemplate restTemplate() {
+    BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+    credsProvider.setCredentials(
+        new AuthScope(host, port), new NTCredentials(username, password.toCharArray(), "", domain));
+
+    CloseableHttpClient httpClient =
+        HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+
+    HttpComponentsClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
+
+    return new RestTemplate(requestFactory);
+  }
+}

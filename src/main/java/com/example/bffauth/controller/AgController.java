@@ -9,20 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ag")
 public class AgController {
 
-    private final AgService agService;
+  private final AgService agService;
 
-    public AgController(AgService agService) {
-        this.agService = agService;
-    }
+  public AgController(AgService agService) {
+    this.agService = agService;
+  }
 
-    @GetMapping("/files")
-    public String getFiles() {
-        try {
-            return agService.getFiles();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Hata oluştu: " + e.getMessage();
-        }
+  @GetMapping("/files")
+  public String getFiles() {
+    try {
+      return agService.getFiles();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "Hata oluştu: " + e.getMessage();
     }
+  }
 }
-

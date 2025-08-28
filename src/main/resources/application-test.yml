@@ -1,6 +1,24 @@
 server:
   port: 8080
 
+spring:
+  datasource:
+    url: xxx
+    username: xxx
+    password: xxx
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+  jpa:
+    hibernate:
+      ddl-auto: none   # ilk geliştirme aşamasında "update", prod'da migration tool önerilir
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServer2016Dialect
+    show-sql: true
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+
 sharepoint:
   ag:
     host: "host"
@@ -15,3 +33,9 @@ sharepoint:
 logging:
   level:
     ROOT: DEBUG
+
+app:
+  jwt:
+    secret: xxx
+    access-ms: xxx
+    refresh-ms: xxx
