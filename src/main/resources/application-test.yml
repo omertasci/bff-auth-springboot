@@ -21,6 +21,9 @@ spring:
 
 sharepoint:
   ag:
+    username: "xxx"
+    password: "xxx"
+    domain: "xxx"
     host: "host"
     port: 443
     base-url: "companybaseurl"

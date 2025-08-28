@@ -27,6 +27,11 @@ For example: a user who has LDAP account on LDAP server tries to authenticate by
     "password":"password123"
     }'
    ```
+6. There are multiple application.yml files, and the one to be used is determined by the `spring.config.name` argument.
+   ```
+   java -jar app.jar --spring.config.name=application-test
+
+   ```
    
 ## Authors
 
