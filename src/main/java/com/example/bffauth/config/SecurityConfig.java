@@ -1,46 +1,38 @@
 package com.example.bffauth.config;
 
+import com.example.bffauth.util.JwtAuthenticationFilter;
+import com.example.bffauth.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.Arrays;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
-    // LDAP sunucu bağlantısı
-    @Bean
-    public DefaultSpringSecurityContextSource contextSource() {
-        return new DefaultSpringSecurityContextSource(
-                Arrays.asList("ldap://localhost:389"),
-                "dc=mycompany,dc=com"
-        );
+    private final JwtUtil jwtUtil;
+
+    public SecurityConfig(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
-    // Security filter chain (izinler ve http ayarları burada)
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer:: disable)
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/auth/authenticate").permitAll()
-                        .anyRequest().permitAll()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil);
+
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults());
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        // for H2 console
+        http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-    // AuthenticationManager bean'ini Spring'den alıyoruz
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
     }
 }
