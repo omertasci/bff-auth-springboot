@@ -14,33 +14,33 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class NtlmRestTemplateConfig {
 
-    @Value("${sharepoint.ag.host}")
-    String host;
-    @Value("${sharepoint.ag.port}")
-    int port;
-    @Value("${sharepoint.ag.username}")
-    String username;
-    @Value("${sharepoint.ag.password}")
-    String password;
-    @Value("${sharepoint.ag.domain}")
-    String domain;
+  @Value("${sharepoint.ag.host}")
+  String host;
 
+  @Value("${sharepoint.ag.port}")
+  int port;
 
-    @Bean
-    public RestTemplate restTemplate() {
-        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(
-                new AuthScope(host, port),
-                new NTCredentials(username, password.toCharArray(), "", domain)
-        );
+  @Value("${sharepoint.ag.username}")
+  String username;
 
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setDefaultCredentialsProvider(credsProvider)
-                .build();
+  @Value("${sharepoint.ag.password}")
+  String password;
 
-        HttpComponentsClientHttpRequestFactory requestFactory =
-                new HttpComponentsClientHttpRequestFactory(httpClient);
+  @Value("${sharepoint.ag.domain}")
+  String domain;
 
-        return new RestTemplate(requestFactory);
-    }
+  @Bean
+  public RestTemplate restTemplate() {
+    BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+    credsProvider.setCredentials(
+        new AuthScope(host, port), new NTCredentials(username, password.toCharArray(), "", domain));
+
+    CloseableHttpClient httpClient =
+        HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
+
+    HttpComponentsClientHttpRequestFactory requestFactory =
+        new HttpComponentsClientHttpRequestFactory(httpClient);
+
+    return new RestTemplate(requestFactory);
+  }
 }
